@@ -6,7 +6,8 @@
 ]]
 
 -- requires and resource initializations
---require 'src/Dependencies'
+require 'src/Dependencies'
+
 
 function love.load()
     
@@ -15,6 +16,15 @@ function love.load()
 
     -- seed the RNG
     math.randomseed(os.time())
+
+    push:setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, {
+        fullscreen = false,
+        vsync = true,
+        resizable = true,
+        canvas = false
+    })
+
+    pc = PlayerClient()
 
     -- initialize input table
     love.keyboard.keysPressed = {}
@@ -69,7 +79,8 @@ function love.wasPressed(key)
 end
 
 function love.update(dt)
-    
+
+    pc:sendHELO()
     -- update global tween timer
     Timer.update(dt)
 end
@@ -78,7 +89,7 @@ function love.draw()
     
     push:start()
     
-    gStateMachine:render()
+    --gStateMachine:render()
     
     push:finish()
 end
