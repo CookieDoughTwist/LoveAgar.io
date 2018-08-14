@@ -24,7 +24,12 @@ function love.load()
         canvas = false
     })
 
-    pc = PlayerClient()
+    gStateMachine = StateMachine {
+        ['title'] = function() return TitleState() end,
+        ['selection'] = function() return SelectionState() end
+    }
+
+    gStateMachine:change('title')
 
     -- initialize input table
     love.keyboard.keysPressed = {}
@@ -80,7 +85,13 @@ end
 
 function love.update(dt)
 
-    pc:sendHELO()
+    gStateMachine:update(dt)
+
+    -- initialize input table
+    love.keyboard.keysPressed = {}
+    love.mouse.buttonsPressed = {}
+    love.bindings = {}
+    
     -- update global tween timer
     Timer.update(dt)
 end
@@ -89,7 +100,7 @@ function love.draw()
     
     push:start()
     
-    --gStateMachine:render()
+    gStateMachine:render()
     
     push:finish()
 end

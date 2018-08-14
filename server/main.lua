@@ -24,7 +24,7 @@ while running do
 
 	data, msg_or_ip, port_or_nil = udp:receivefrom()
 	
-	if date then
+	if data then
 		print(data)
 		io.flush()
 	elseif msg_or_ip ~= 'timeout' then
