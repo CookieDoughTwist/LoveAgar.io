@@ -14,9 +14,9 @@ function SelectionState:init()
     
     self.options = SELECTIONS_START
     
-    self.canInput = true
+    self.nameInputMode = false
 
-    --gSounds['reselect']:setVolume(0.2)
+    self.canInput = true
 end
 
 function SelectionState:enter(params)
@@ -26,43 +26,43 @@ end
 function SelectionState:update(dt)
 
     if love.keyboard.wasPressed('escape') then
-        gStateMachine:change('title')
+        if self.nameInputMode then
+            self.nameInputMode = false
+        else
+            gStateMachine:change('title')
+        end
     end
 
     if self.canInput then
         
-        -- change menu selection
-        if love.keyboard.wasPressed('up') and
-            self.currentMenuItem ~= 1 then
-            self.currentMenuItem = self.currentMenuItem - 1
-            --gSounds['reselect']:stop()
-            --gSounds['reselect']:play()
-        end
-        
-        if love.keyboard.wasPressed('down') and
-            self.currentMenuItem ~= #self.options then
-            self.currentMenuItem = self.currentMenuItem + 1
-            --gSounds['reselect']:stop()
-            --gSounds['reselect']:play()
-        end
-        
-        -- switch to another state via one of the menu options
-        if love.wasPressed('select') then
-            if self.currentMenuItem > #self.options then
-                gStateMachine:change('start')
-            else                
-                -- tween, using Timer, the transition rect's alpha to 255, then
-                -- transition to the BeginGame state after the animation is over
-                Timer.tween(T_TRANSITION, {
-                    [self] = {transitionAlpha = 255}
-                }):finish(function()
-                    gStateMachine:change('play', {
-                        index = self.currentMenuItem
-                    })
-                end)
+        if self.nameInputMode then
+            if love.wasPressed('input')  then
+                gStateMachine:change('play', {name = textInput})
             end
-
-            self.canInput = false
+        else
+            -- change menu selection
+            if love.keyboard.wasPressed('up') and
+                self.currentMenuItem ~= 1 then
+                self.currentMenuItem = self.currentMenuItem - 1
+                --gSounds['reselect']:stop()
+                --gSounds['reselect']:play()
+            end
+            
+            if love.keyboard.wasPressed('down') and
+                self.currentMenuItem ~= #self.options then
+                self.currentMenuItem = self.currentMenuItem + 1
+                --gSounds['reselect']:stop()
+                --gSounds['reselect']:play()
+            end
+            
+            -- switch to another state via one of the menu options
+            if love.wasPressed('select') then            
+                if self.currentMenuItem == 1 then
+                    self.nameInputMode = true
+                    textInput = ''
+                else
+                end
+            end
         end
     end
 end
@@ -75,9 +75,13 @@ function SelectionState:render()
     love.graphics.setColor(0, 0, 0, 128)
     love.graphics.rectangle('fill', 0, 0, VIRTUAL_WIDTH, VIRTUAL_HEIGHT)
 
-    SelectionState.drawTitle('MAIN MENU', gFonts['CapricaSans128'], VIRTUAL_HEIGHT / 6)
-    SelectionState.drawSelections(
-        self.options, self.currentMenuItem, gFonts['CapricaSans64'], VIRTUAL_HEIGHT_2)
+    if self.nameInputMode then
+        SelectionState.drawTextInput(gFonts['CapricaSans64'], VIRTUAL_HEIGHT_2)
+    else
+        SelectionState.drawTitle('MAIN MENU', gFonts['CapricaSans128'], VIRTUAL_HEIGHT / 6)
+        SelectionState.drawSelections(
+            self.options, self.currentMenuItem, gFonts['CapricaSans64'], VIRTUAL_HEIGHT_2)
+    end
 
     -- draw our transition rect; is normally fully transparent, unless we're moving to a new state
     love.graphics.setColor(255, 255, 255, self.transitionAlpha)
@@ -90,7 +94,7 @@ function SelectionState.drawTitle(title, font, y)
     local textWidth = font:getWidth(title)
     local textHeight = font:getHeight(title)
     
-    love.graphics.setColor(200, 0, 200, 255)
+    love.graphics.setColor(DARK_MAGENTA)
     love.graphics.printf(title, 0, y, VIRTUAL_WIDTH, 'center')
 end
 
@@ -104,9 +108,15 @@ function SelectionState.drawSelections(options, currentOption, font, y)
         if currentOption == k then
             love.graphics.setColor(SLATE_BLUE)
         else
-            love.graphics.setColor(48, 96, 130, 255)
+            love.graphics.setColor(COOL_BLUE)
         end
         
         love.graphics.printf(tag, 0, height, VIRTUAL_WIDTH, 'center')
     end
+end
+
+function SelectionState.drawTextInput(font, y)
+    love.graphics.setFont(font)
+    love.graphics.setColor(SLATE_BLUE)
+    love.graphics.printf(textInput, 0, y, VIRTUAL_WIDTH, 'center')
 end

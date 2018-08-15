@@ -8,6 +8,8 @@
 -- requires and resource initializations
 require 'src/Dependencies'
 
+textInput = ''
+
 function love.load()
     
     -- window bar title
@@ -25,7 +27,8 @@ function love.load()
 
     gStateMachine = StateMachine {
         ['title'] = function() return TitleState() end,
-        ['select'] = function() return SelectionState() end
+        ['select'] = function() return SelectionState() end,
+        ['play'] = function() return PlayState() end,
     }
 
     gStateMachine:change('title')
@@ -40,11 +43,29 @@ function love.resize(w, h)
     push:resize(w, h)
 end
 
+function love.textinput(text)
+    textInput = textInput .. text
+end
+
 function love.keypressed(key)
     
+    if key == "backspace" then
+        -- get the byte offset to the last UTF-8 character in the string.
+        local byteoffset = utf8.offset(textInput, -1)
+ 
+        if byteoffset then
+            -- remove the last UTF-8 character.
+            -- string.sub operates on bytes rather than UTF-8 characters, so we couldn't do string.sub(text, 1, -2).
+            textInput = string.sub(textInput, 1, byteoffset - 1)
+        end
+    end
+
     -- add to our table of keys pressed this frame
     love.keyboard.keysPressed[key] = true
-    if key == 'enter' or key == 'return' or key == 'kpenter' or key == 'space' then
+    if key == 'enter' or key == 'return' or key == 'kpenter' then
+        love.bindings['input'] = true
+    end
+    if love.bindings['input'] or key == 'space' then
         love.bindings['select'] = true
     end
     if key == '=' or key == 'kp+' then

@@ -11,6 +11,8 @@ push = require 'lib/push'
 Timer = require 'lib/knife.timer'
 socket = require 'socket'
 
+utf8 = require('utf8')
+
 require 'src/constants'
 
 -- network
@@ -24,6 +26,7 @@ require 'src/states/BaseState'
 -- game states
 require 'src/states/game/TitleState'
 require 'src/states/game/SelectionState'
+require 'src/states/game/PlayState'
 
 -- sounds
 gSounds = {

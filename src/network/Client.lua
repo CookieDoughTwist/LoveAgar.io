@@ -2,7 +2,7 @@ Client = Class()
 
 function Client:init(address, port)
     self.address = address
-    self.port = port    
+    self.port = port
     self:startUDP()
 end
 
@@ -28,4 +28,17 @@ function Client:receive()
     end
 
     return nil
+end
+
+function Client:receiveAll()
+    local dataTable = {}
+
+    local data = self:receive()
+
+    while data do
+        table.insert(dataTable, data)
+        data = data:receive()
+    end
+
+    return dataTable
 end
