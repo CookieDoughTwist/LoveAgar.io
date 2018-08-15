@@ -17,7 +17,7 @@ function Client:send(message)
 end
 
 function Client:receive()
-    local data, message = self.udp.receive()
+    local data, message = self.udp:receive()
 
     if data then
         return data

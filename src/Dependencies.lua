@@ -15,6 +15,12 @@ utf8 = require('utf8')
 
 require 'src/constants'
 
+-- utilities
+require '/src/Util'
+
+-- engine
+require 'src/Engine'
+
 -- network
 require 'src/network/Client'
 require 'src/network/PlayerClient'
@@ -27,6 +33,9 @@ require 'src/states/BaseState'
 require 'src/states/game/TitleState'
 require 'src/states/game/SelectionState'
 require 'src/states/game/PlayState'
+
+-- protocol states
+require 'src/states/client/PlayerClientConnectingState'
 
 -- sounds
 gSounds = {

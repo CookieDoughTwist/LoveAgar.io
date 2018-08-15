@@ -6,23 +6,24 @@ function PlayerClient:init(name)
     
     self.name = name
     self.connected = false
-    self.protocolState = 'connecting'
-    self.lastUpdateElapsed = math.huge
+    self.stateMachine = StateMachine {
+        ['connecting'] = function() return PlayerClientConnectingState(self) end,
+        ['play'] = function() return PlayerClientPlayState(self) end,
+    }
+    
+    self:changeState('connecting')
+    self.receivedMessages = {}
 end
 
 function PlayerClient:update(dt)
-    self.lastUpdateElapsed = self.lastUpdateElapsed + dt
-    local receives = self.receiveAll()
+        
+    self.receivedMessages = self:receiveAll()
 
-    if self.protocolState == 'connecting' then
+    self.stateMachine:update()
+end
 
-        if self.lastUpdateElapsed > RESEND_INTERVAL then
-            self:sendHELO()
-        end
-    elseif self.protocolState == 'play' then
-    else
-        error(string.format("Unhandled protocol: %s", self.protocolState))
-    end
+function PlayerClient:changeState(name)
+    self.stateMachine:change(name)
 end
 
 function PlayerClient:sendHELO()
