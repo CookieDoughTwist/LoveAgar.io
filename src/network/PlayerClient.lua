@@ -13,13 +13,18 @@ function PlayerClient:init(name)
     
     self:changeState('connecting')
     self.receivedMessages = {}
+    self.lastReceivedElapsed = math.huge
 end
 
 function PlayerClient:update(dt)
-        
+    
+    -- collect received messages
     self.receivedMessages = self:receiveAll()
 
-    self.stateMachine:update()
+    -- reset elapsed counter if message received, otherwise increment dt
+    self.lastReceivedElapsed = self.receivedMessages and 0 or self.lastReceivedElapsed + dt
+
+    self.stateMachine:update(dt)
 end
 
 function PlayerClient:changeState(name)
@@ -28,6 +33,5 @@ end
 
 function PlayerClient:sendHELO()
     local message = string.format(HELO_FMT, self.name)
-
     self:send(message)
 end

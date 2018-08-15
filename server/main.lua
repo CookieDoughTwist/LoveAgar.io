@@ -24,13 +24,21 @@ local loopEndTime = initTime
 while running do
 
 	data, msg_or_ip, port_or_nil = udp:receivefrom()
-	
-	if data then
+
+	while msg_or_ip ~= 'timeout' do
+		-- TODO: check logic on this one 8/15/18 -AW		
+		if not data then
+			error("Unhandled network error: " .. tostring(msg_or_ip))
+		end
+		print('data')
 		print(data)
+		print(msg_or_ip)
+		print(port_or_nil)
+		print()
 		io.flush()
-	elseif msg_or_ip ~= 'timeout' then
-		error("Unhandled network error: " .. tostring(msg))
+		data, msg_or_ip, port_or_nil = udp:receivefrom()
 	end
+		
 
 	loopEndTime = socket.gettime()
 	local loopTimeLeft = DT - (loopEndTime - lastLoopEndTime)
