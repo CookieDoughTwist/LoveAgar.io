@@ -25,7 +25,7 @@ function love.load()
 
     gStateMachine = StateMachine {
         ['title'] = function() return TitleState() end,
-        ['selection'] = function() return SelectionState() end
+        ['select'] = function() return SelectionState() end
     }
 
     gStateMachine:change('title')
@@ -90,7 +90,7 @@ function love.update(dt)
     love.keyboard.keysPressed = {}
     love.mouse.buttonsPressed = {}
     love.bindings = {}
-    
+
     -- update global tween timer
     Timer.update(dt)
 end

@@ -23,6 +23,7 @@ require 'src/states/BaseState'
 
 -- game states
 require 'src/states/game/TitleState'
+require 'src/states/game/SelectionState'
 
 -- sounds
 gSounds = {

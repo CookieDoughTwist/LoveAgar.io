@@ -75,11 +75,38 @@ function SelectionState:render()
     love.graphics.setColor(0, 0, 0, 128)
     love.graphics.rectangle('fill', 0, 0, VIRTUAL_WIDTH, VIRTUAL_HEIGHT)
 
-    drawSelectionsText('SCENARIOS', -200)
-    drawMenu(self.currentMenuItem, 12, self.options)
+    SelectionState.drawTitle('MAIN MENU', gFonts['CapricaSans128'], VIRTUAL_HEIGHT / 6)
+    SelectionState.drawSelections(
+        self.options, self.currentMenuItem, gFonts['CapricaSans64'], VIRTUAL_HEIGHT_2)
 
     -- draw our transition rect; is normally fully transparent, unless we're moving to a new state
     love.graphics.setColor(255, 255, 255, self.transitionAlpha)
     love.graphics.rectangle('fill', 0, 0, VIRTUAL_WIDTH, VIRTUAL_HEIGHT)
 end
 
+function SelectionState.drawTitle(title, font, y)
+    love.graphics.setFont(font)
+
+    local textWidth = font:getWidth(title)
+    local textHeight = font:getHeight(title)
+    
+    love.graphics.setColor(200, 0, 200, 255)
+    love.graphics.printf(title, 0, y, VIRTUAL_WIDTH, 'center')
+end
+
+function SelectionState.drawSelections(options, currentOption, font, y)
+    love.graphics.setFont(font)
+
+    for k, tag in pairs(options) do        
+        
+        height = y + MENU_TEXT_JUMP * (k - 1)        
+
+        if currentOption == k then
+            love.graphics.setColor(SLATE_BLUE)
+        else
+            love.graphics.setColor(48, 96, 130, 255)
+        end
+        
+        love.graphics.printf(tag, 0, height, VIRTUAL_WIDTH, 'center')
+    end
+end
