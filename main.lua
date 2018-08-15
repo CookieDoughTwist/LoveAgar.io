@@ -8,7 +8,6 @@
 -- requires and resource initializations
 require 'src/Dependencies'
 
-
 function love.load()
     
     -- window bar title

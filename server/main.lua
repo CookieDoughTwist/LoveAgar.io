@@ -1,7 +1,7 @@
 local socket = require 'socket'
  
 local udp = socket.udp()
- 
+
 -- non-blocking read (immediate timeout)
 udp:settimeout(0)
  
@@ -39,3 +39,5 @@ while running do
 		socket.sleep(loopTimeLeft)
 	end
 end
+
+
