@@ -1,4 +1,4 @@
-
+--[[
 
 
 function serverLoop(server, dt)
@@ -23,6 +23,9 @@ function serverLoop(server, dt)
 		if loopTimeLeft > 0 then
 			socket.sleep(loopTimeLeft)
 		end
+
+		-- TODO: remove in operation 8/17/18 -AW
+		io.flush()
 	end
 end
 
@@ -32,9 +35,18 @@ socket = require 'socket'
 
 -- classes
 require 'Server'
+
+-- constants
+require '../src/constants'
  
 local server = Server()
 
 local DT = 0.1
 
 serverLoop(server, DT)
+]]
+
+
+
+-- copying https://github.com/huytd/agar.io-clone/blob/master/src/server/server.js
+
